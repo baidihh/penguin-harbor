@@ -6,10 +6,10 @@ from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import patch
 
-from demo.companion import Companion
-from demo.glm import GlmError
-from demo.main import App
-from demo.music_queue import MusicQueue, parse_lyrics
+from desktop.companion import Companion
+from desktop.glm import GlmError
+from desktop.main import App
+from desktop.music_queue import MusicQueue, parse_lyrics
 
 
 class TestPlayer:

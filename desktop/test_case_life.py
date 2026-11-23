@@ -7,8 +7,8 @@ import tempfile
 from types import SimpleNamespace
 import unittest
 
-from demo.companion import Companion
-from demo.main import Handler
+from desktop.companion import Companion
+from desktop.main import Handler
 from oppo_protocol import decode_position, decode_touch_event
 
 

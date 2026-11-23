@@ -5,9 +5,9 @@ import json
 from types import SimpleNamespace
 from unittest.mock import patch
 
-from demo.desktop_voice import DesktopVoice
-from demo.netease import NetEase
-from demo.netease_account import NetEaseAccount
+from desktop.desktop_voice import DesktopVoice
+from desktop.netease import NetEase
+from desktop.netease_account import NetEaseAccount
 
 
 class AudioQualityTests(unittest.TestCase):
@@ -20,7 +20,7 @@ class AudioQualityTests(unittest.TestCase):
         replies = [SimpleNamespace(returncode=0, stdout=json.dumps(data), stderr='') for data in responses]
         account = NetEaseAccount()
         account.command = ('ncm-cli.cmd',)
-        with patch('demo.netease_account.subprocess.run', side_effect=replies):
+        with patch('desktop.netease_account.subprocess.run', side_effect=replies):
             result = account.liked()
         self.assertEqual(result['total'], 151)
         self.assertEqual(result['songs'], [{'id': 12, 'name': '下一个天亮', 'artist': '郭静'}])
@@ -30,7 +30,7 @@ class AudioQualityTests(unittest.TestCase):
         reply = SimpleNamespace(returncode=0, stdout='{"code":301,"message":"login required"}', stderr='')
         account = NetEaseAccount()
         account.command = ('ncm-cli.cmd',)
-        with patch('demo.netease_account.subprocess.run', return_value=reply):
+        with patch('desktop.netease_account.subprocess.run', return_value=reply):
             with self.assertRaisesRegex(RuntimeError, '登录'):
                 account.daily()
 

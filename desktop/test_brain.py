@@ -5,11 +5,11 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from demo.companion import Companion
-from demo.memory import Memory
-from demo.netease import NetEase, NoPlayableSource
-from demo.plugin import Plugin, PluginError
-from demo.thinker import Thinker
+from desktop.companion import Companion
+from desktop.memory import Memory
+from desktop.netease import NetEase, NoPlayableSource
+from desktop.plugin import Plugin, PluginError
+from desktop.thinker import Thinker
 
 
 class FakeGlm:
@@ -176,7 +176,7 @@ class ThinkerTests(BrainTestCase):
         self.assertEqual(len(music.played), 2)
 
     def test_song_word_detects_request(self):
-        from demo.main import _song_trigger
+        from desktop.main import _song_trigger
         self.assertEqual(_song_trigger('放一首小星星', '随便'), '来访者刚点了歌：「放一首小星星」')
         self.assertEqual(_song_trigger('今天下雨了', '随便'), '随便')
 
@@ -256,7 +256,7 @@ class ThinkerTests(BrainTestCase):
     def test_glm_failure_keeps_penguin_quiet(self):
         class Broken(FakeGlm):
             def complete(self, messages, tools=None, **kwargs):
-                from demo.glm import GlmError
+                from desktop.glm import GlmError
                 raise GlmError('连不上')
         thinker = Thinker(self.pet, self.memory, Broken(), FakeMusic())
         before = self.pet.snapshot()['message']['id']
@@ -295,7 +295,7 @@ if __name__ == '__main__':
 
 class AccountPlaybackTests(BrainTestCase):
     def test_explicit_collection_commands_are_distinct_from_questions_and_song_selection(self):
-        from demo.netease_account import requested_collection
+        from desktop.netease_account import requested_collection
 
         for text in ('放我今天的日推', '放那个日推的歌曲', '帮我播放网易云每日推荐'):
             self.assertEqual(requested_collection(text), 'daily')
@@ -304,7 +304,7 @@ class AccountPlaybackTests(BrainTestCase):
         self.assertIsNone(requested_collection('放日推里的第二首'))
 
     def test_explicit_netease_song_requests_keep_the_actual_keyword(self):
-        from demo.netease_account import requested_song
+        from desktop.netease_account import requested_song
 
         self.assertEqual(requested_song('请在网易云放一首小星星，直接播放'), '小星星')
         self.assertEqual(requested_song('帮我播放周杰伦的《晴天》'), '晴天 周杰伦')
@@ -315,7 +315,7 @@ class AccountPlaybackTests(BrainTestCase):
         self.assertIsNone(requested_song('放下手机'))
 
     def test_chat_recognizes_generic_music_requests_and_plain_artist_title(self):
-        from demo.netease_account import requested_song
+        from desktop.netease_account import requested_song
         for request in ('放一首歌吧', '随便来首歌', '帮我放点音乐'):
             self.assertEqual(requested_song(request), '')
         self.assertEqual(requested_song('放一首赵雷的我记得吧'), '赵雷的我记得')
@@ -325,8 +325,8 @@ class AccountPlaybackTests(BrainTestCase):
     def test_daily_playback_uses_original_ids_and_queues_remaining_tracks(self):
         from types import SimpleNamespace
         from unittest.mock import Mock
-        from demo.main import App
-        from demo.music_queue import MusicQueue
+        from desktop.main import App
+        from desktop.music_queue import MusicQueue
 
         songs = [{'id': 10, 'name': '第一首', 'artist': '甲'},
                  {'id': 20, 'name': '第二首', 'artist': '乙'},
@@ -350,7 +350,7 @@ class AccountPlaybackTests(BrainTestCase):
     def test_liked_playback_respects_selected_id(self):
         from types import SimpleNamespace
         from unittest.mock import Mock
-        from demo.main import App
+        from desktop.main import App
 
         account = Mock()
         track = {'id': 20, 'name': '想听的歌', 'artist': '乙'}

@@ -11,7 +11,7 @@ import urllib.request
 import venv
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from demo.moss_download import download, read_json
+from desktop.moss_download import download, read_json
 
 
 REPOSITORY = 'csukuangfj/kokoro-multi-lang-v1_0'

@@ -1,5 +1,5 @@
 import unittest
-from demo.desktop_overlay import CaptionState, caption_origin
+from desktop.desktop_overlay import CaptionState, caption_origin
 
 class CaptionTests(unittest.TestCase):
     def test_reply_yields_to_music_after_seven_seconds(self):

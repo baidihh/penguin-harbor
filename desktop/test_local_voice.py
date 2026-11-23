@@ -10,12 +10,12 @@ import unittest
 from unittest.mock import patch
 import wave
 
-from demo import voice
-from demo import local_voice
-from demo.companion import Companion
-from demo.netease import find_ffmpeg
-from demo.moss_download import download
-from demo.test_native_voice import FileVoice
+from desktop import voice
+from desktop import local_voice
+from desktop.companion import Companion
+from desktop.netease import find_ffmpeg
+from desktop.moss_download import download
+from desktop.test_native_voice import FileVoice
 
 
 def sample_wav():
@@ -36,7 +36,7 @@ class LocalVoiceTests(unittest.TestCase):
             self.assertIn('Mr%20serious', request.full_url)
             return io.BytesIO(b'abc')
         with tempfile.TemporaryDirectory(dir=root) as directory:
-            with patch('demo.moss_download.urllib.request.urlopen', side_effect=fetch):
+            with patch('desktop.moss_download.urllib.request.urlopen', side_effect=fetch):
                 download('example/model', 'pinned', {'path': 'voices/Mr serious', 'size': 3}, Path(directory))
             self.assertEqual((Path(directory) / 'voices/Mr serious').read_bytes(), b'abc')
 
@@ -64,7 +64,7 @@ class LocalVoiceTests(unittest.TestCase):
         expected = sample_wav()
         backend = SimpleNamespace(synthesize=lambda text: expected)
         voice.synthesize.cache_clear()
-        with patch.dict(sys.modules, {'demo.local_voice': backend}):
+        with patch.dict(sys.modules, {'desktop.local_voice': backend}):
             result = voice.synthesize('moss_wanwan', '你好，今天海面好亮。')
         self.assertEqual(result, expected)
         voice.synthesize.cache_clear()
@@ -75,7 +75,7 @@ class LocalVoiceTests(unittest.TestCase):
             self.assertEqual(voice_id, 'kokoro_xiaobei')
             return expected
         voice.synthesize.cache_clear()
-        with patch.dict(sys.modules, {'demo.local_voice': SimpleNamespace(synthesize=generate)}):
+        with patch.dict(sys.modules, {'desktop.local_voice': SimpleNamespace(synthesize=generate)}):
             self.assertEqual(voice.synthesize('kokoro_xiaobei', '今天想听什么？'), expected)
         voice.synthesize.cache_clear()
 
@@ -103,7 +103,7 @@ class LocalVoiceTests(unittest.TestCase):
             player = WavePlayer(directory)
             expected = sample_wav()
             try:
-                with patch('demo.voice.synthesize', return_value=expected):
+                with patch('desktop.voice.synthesize', return_value=expected):
                     player.say('moss_wanwan', '你好')
                     deadline = time.monotonic() + 5
                     while time.monotonic() < deadline and not player.output.exists():

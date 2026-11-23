@@ -16,17 +16,17 @@ import webbrowser
 
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT.parent))
-from demo.companion import Companion
-from demo.earbuds import EarbudBridge
-from demo.glm import Glm, GlmError, save_key
-from demo.memory import Memory
-from demo.music_queue import MusicQueue
-from demo.netease import NetEase
-from demo.netease_account import ACCOUNT_TOOLS, NetEaseAccount, requested_collection, requested_song
-from demo.penguin_sprite import png_bytes, read_frames, with_earbuds
-from demo.speech import Speech, chat_reply
-from demo.thinker import Thinker, TOOLS
-from demo.voice import MacVoice, WindowsVoice, synthesize
+from desktop.companion import Companion
+from desktop.earbuds import EarbudBridge
+from desktop.glm import Glm, GlmError, save_key
+from desktop.memory import Memory
+from desktop.music_queue import MusicQueue
+from desktop.netease import NetEase
+from desktop.netease_account import ACCOUNT_TOOLS, NetEaseAccount, requested_collection, requested_song
+from desktop.penguin_sprite import png_bytes, read_frames, with_earbuds
+from desktop.speech import Speech, chat_reply
+from desktop.thinker import Thinker, TOOLS
+from desktop.voice import MacVoice, WindowsVoice, synthesize
 
 
 CONTROL_REQUESTS = {
@@ -443,9 +443,9 @@ def main():
             app.stopped.wait()
         else:
             if sys.platform == 'darwin':
-                from demo.desktop_macos import DesktopPet
+                from desktop.desktop_macos import DesktopPet
             else:
-                from demo.desktop import DesktopPet
+                from desktop.desktop import DesktopPet
             DesktopPet(app).run()
     except KeyboardInterrupt:
         pass

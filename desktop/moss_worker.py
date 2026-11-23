@@ -10,7 +10,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 def main():
     if len(sys.argv) == 4 and sys.argv[2] == '--prepare-reference':
-        from demo.moss_engine import prepare_voice
+        from desktop.moss_engine import prepare_voice
         prepare_voice(sys.argv[1], sys.argv[3])
         print(json.dumps({'prepared': True}), flush=True)
         return
@@ -29,10 +29,10 @@ def main():
                 engine = None
                 backend = ''
                 if requested_backend == 'kokoro':
-                    from demo.kokoro_engine import KokoroEngine
+                    from desktop.kokoro_engine import KokoroEngine
                     engine = KokoroEngine(sys.argv[1])
                 else:
-                    from demo.moss_engine import MossEngine
+                    from desktop.moss_engine import MossEngine
                     engine = MossEngine(sys.argv[1])
                 backend = requested_backend
             audio, stats = engine.synthesize(text, voice) if backend == 'kokoro' else engine.synthesize(text)

@@ -7,7 +7,7 @@ import unittest
 from concurrent.futures import ThreadPoolExecutor
 
 try:
-    from demo.companion import Companion
+    from desktop.companion import Companion
 except ModuleNotFoundError:
     Companion = None
 

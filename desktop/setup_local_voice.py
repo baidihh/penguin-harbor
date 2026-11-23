@@ -13,8 +13,8 @@ import venv
 import wave
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from demo.moss_download import download, read_json
-from demo.netease import find_ffmpeg
+from desktop.moss_download import download, read_json
+from desktop.netease import find_ffmpeg
 
 
 SOURCE_COMMIT = '8b7bcc9341b3b4ef3a3a58ba1338a7d85ff133eb'

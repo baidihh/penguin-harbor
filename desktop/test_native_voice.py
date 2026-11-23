@@ -10,8 +10,8 @@ from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
-from demo.main import App
-from demo.voice import MacVoice
+from desktop.main import App
+from desktop.voice import MacVoice
 
 
 class FileVoice(MacVoice):
@@ -57,8 +57,8 @@ class NativeVoiceTests(unittest.TestCase):
         self.assertTrue(callable(getattr(self.app, 'start_native_voice', None)), 'Windows desktop playback is missing')
         self.app.pet.act('voice_select', value='xiaoxiao')
         self.app.pet.act('voice', enabled=True)
-        with patch('demo.main.WindowsVoice', FileVoice, create=True), patch('demo.main.sys.platform', 'win32'), patch(
-            'demo.voice.synthesize', side_effect=lambda voice, text: (voice + '\n' + text).encode('utf-8')
+        with patch('desktop.main.WindowsVoice', FileVoice, create=True), patch('desktop.main.sys.platform', 'win32'), patch(
+            'desktop.voice.synthesize', side_effect=lambda voice, text: (voice + '\n' + text).encode('utf-8')
         ):
             self.app.start_native_voice()
             self.app.pet.earbud_touch({'ear': 'right', 'gesture': 'double_tap'})
@@ -83,8 +83,8 @@ class NativeVoiceTests(unittest.TestCase):
 
     def test_closed_case_cancels_speech_until_ears_are_worn_again(self):
         self.app.pet.act('voice', enabled=True)
-        with patch('demo.main.WindowsVoice', FileVoice), patch('demo.main.sys.platform', 'win32'), patch(
-            'demo.voice.synthesize', side_effect=lambda voice, text: text.encode('utf-8')
+        with patch('desktop.main.WindowsVoice', FileVoice), patch('desktop.main.sys.platform', 'win32'), patch(
+            'desktop.voice.synthesize', side_effect=lambda voice, text: text.encode('utf-8')
         ):
             self.app.pet.simulate_case('lid_close')
             self.app.start_native_voice()
