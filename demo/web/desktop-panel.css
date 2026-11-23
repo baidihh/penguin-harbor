@@ -1,0 +1,33 @@
+/* Native windows host the same components as the design preview. */
+html, body, .shell, .stage {background:transparent!important; margin:0; padding:0; overflow:hidden}
+.bar,.stage>* {display:none}
+.shell,.stage {display:block;min-height:0;max-width:none;border-radius:0}
+body {padding:3px;font-family:"Microsoft YaHei UI","Segoe UI",sans-serif}
+body[data-panel="menu"] .menu,body[data-panel="options"] .menu,body[data-panel="voices"] .menu {display:grid}
+body[data-panel="music"] .player {display:block}
+body[data-panel="caption"] .chat,body[data-panel="dock"] .chat {display:block}
+.chat>* {display:none}
+body[data-panel="caption"] .caption {display:grid;min-height:30px;margin:auto;font-size:18px;line-height:1.45;max-width:100%;text-align:center;cursor:grab;text-shadow:0 1px 3px #19252f,0 0 7px #253948,0 0 13px #354b57}
+body[data-panel="dock"] .compose {display:block;width:100%}
+.dock {width:100%;height:41px}
+.glass {background:linear-gradient(145deg,rgba(81,111,124,.87),rgba(48,67,80,.89));box-shadow:inset 0 1px #ffffff21}
+.player {width:100%;padding:15px}.menu{width:100%;gap:2px}.menu button{min-height:31px;padding:6px 10px}.content{max-height:145px;overflow:auto;scrollbar-width:thin}
+.queue span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.search input{min-width:0}.caption:empty{display:none}
+.caption{display:-webkit-box!important;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+body:not([data-panel="caption"]) .caption{display:none!important}
+.song progress{appearance:none;display:block;width:100%;height:5px;border:0;border-radius:5px;overflow:hidden;margin:9px 0 5px;background:#bed0d345}
+.song progress::-webkit-progress-bar{background:#bed0d345}
+.song progress::-webkit-progress-value{background:#a1eee1}
+
+body[data-panel="history"] .history {display:flex;flex-direction:column;gap:10px;padding:15px;width:100%;border-radius:17px}
+.history header {display:flex;align-items:center;justify-content:space-between;font-weight:600}
+.history header button {display:grid;place-items:center;width:28px;height:28px}
+.history-log {height:260px;overflow:auto;scrollbar-width:thin;overflow-wrap:anywhere}
+.history-log article {margin:4px 4px 12px}
+.history-log small {color:#c2d4dc;font-size:11px}
+.history-log p {margin:3px 0;white-space:pre-wrap;line-height:1.5}
+.history-log .from-user {text-align:right;color:#c4fff1}
+.history .compose,.history .dock {width:100%}
+
+.history #more {display:none}

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#edf3f7">
+  <title>企鹅港湾</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/style.css?v=3">
+  <script src="/app.js?v=4" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="header">
+      <a class="brand" href="/" aria-label="企鹅港湾首页"><span class="brand-symbol">港<span>✦</span></span><span class="brand-name">企鹅港湾</span></a>
+      <nav class="tabs" aria-label="房间导航">
+        <button class="tab active" data-tab="room" aria-selected="true">码头</button>
+        <button class="tab" data-tab="memories" aria-selected="false">会话记录 <span id="memory-count" class="small-count">0</span></button>
+      </nav>
+      <div class="desktop-controls"><details class="size-control"><summary>大小 <span id="size-summary">100%</span></summary><div class="size-popover"><label for="pet-size">精灵大小 <output id="pet-size-label">100%</output></label><div class="size-slider"><button id="pet-smaller" aria-label="缩小精灵">−</button><input type="range" id="pet-size" min="50" max="200" step="5" value="100" aria-label="精灵大小"><button id="pet-larger" aria-label="放大精灵">+</button></div><button id="pet-size-reset">恢复 100%</button><p>桌面精灵也可以用滚轮缩放。</p></div></details><button class="desktop-button" id="desktop-toggle"><span class="desktop-icon" aria-hidden="true">▱</span> 来桌面陪我</button></div>
+    </header>
+
+    <main>
+      <div class="page-heading">
+        <div><p class="eyebrow">SNOW HARBOR</p><h1 id="page-title">晚一点，港口见。</h1></div>
+        <div class="room-weather"><span class="weather-icon" aria-hidden="true">❄</span><div>港口有小雪<small id="day-label">守灯第 1 天</small></div></div>
+      </div>
+
+      <section id="room-view" class="room-layout" aria-label="企鹅的码头">
+        <div class="room-column">
+          <section class="case-home" id="case-home" data-phase="unknown" aria-label="耳机盒精灵的小屋">
+            <div class="case-model" id="case-model">
+              <div class="case-lining"><span class="case-lamp"></span><span class="case-rug"></span></div>
+              <div class="case-pet"><img class="penguin-image" hidden alt="住在耳机盒里的企鹅"><span class="penguin-placeholder" aria-hidden="true">🐧</span></div>
+              <button class="case-lid" id="case-lid" data-simulate="lid_open" aria-label="体验开盖"><span>企鹅的小屋</span></button>
+              <div class="case-base"><span class="case-indicator"></span></div>
+              <button class="case-ear case-ear-left" id="case-ear-left" data-simulate="take_left" aria-label="体验取出左耳"><span>L</span></button>
+              <button class="case-ear case-ear-right" id="case-ear-right" data-simulate="take_right" aria-label="体验取出右耳"><span>R</span></button>
+              <span class="case-sleep" aria-hidden="true">z z</span>
+              <div class="case-light-level"><span>小屋灯光</span><output id="case-light-level">60%</output><div class="case-light-track" aria-hidden="true"><span id="case-light-fill"></span></div></div>
+              <span class="case-model-caption" id="case-model-caption">等待耳机状态</span>
+            </div>
+            <div class="case-home-content">
+              <div class="case-home-heading"><h2>耳机盒是他的家</h2><span id="case-source">跟随耳机</span><button id="case-follow-live" data-simulate="live" hidden>跟随耳机</button></div>
+              <p class="case-phase" id="case-phase" aria-live="polite">等你打开耳机盒</p>
+              <div class="case-ear-status"><span id="case-left-status">左耳 · 未知</span><span id="case-right-status">右耳 · 未知</span><span id="case-lid-status">盒盖 · 未知</span></div>
+              <p class="case-moment" id="case-moment">开盖探头，取出时跟你出门，回盒后收拾自己的小屋。</p>
+              <div class="case-keepsake"><span>企鹅的小收藏 <output id="case-collection-count">0</output></span><h3 id="case-card-title">给下次见面留个位置</h3><p id="case-card-text">回盒、合盖后，他会准备一张自己的小画，再见面时拿给你。</p></div>
+              <div class="case-touch-row"><div class="case-swipe-pad" id="case-swipe-pad" role="slider" tabindex="0" aria-label="模拟滑动调节小屋灯光" aria-valuemin="10" aria-valuemax="100" aria-valuenow="60"><span aria-hidden="true">↕</span><span>上下滑动调灯光<small>滑动手势体验</small></span><output id="case-warmth">60%</output></div><div class="case-touch-hint">左耳单击摸摸头<br>右耳单击翻收藏</div></div>
+              <details class="case-controls" open><summary>体验耳机动作</summary><div class="case-action-group"><button data-simulate="lid_open">开盖</button><button data-simulate="lid_close">合盖</button><button data-simulate="take_left">取出左耳</button><button data-simulate="take_right">取出右耳</button><button data-simulate="wear">戴上</button><button data-simulate="remove">摘下</button><button data-simulate="return_both">放回双耳</button></div><div class="case-action-group"><button data-simulate="single_left">左耳单击</button><button data-simulate="single_right">右耳单击</button><button data-simulate="left">左耳双击</button><button data-simulate="right">右耳双击</button><button data-simulate="swipe_up">上滑</button><button data-simulate="swipe_down">下滑</button></div><p class="case-capability" id="case-capability">右耳上滑调亮、下滑调暗小屋。空盒盖态可能未知。</p></details>
+              <ol class="case-events" id="case-events" aria-label="最近的耳机互动"></ol>
+            </div>
+          </section>
+          <div class="scene" id="scene" data-activity="lantern">
+            <img class="room-image" src="/assets/harbor.webp" alt="飘雪的码头、海湾和灯塔" fetchpriority="high">
+            <div class="scene-shade"></div>
+            <div class="scene-top"><span class="live-dot"></span><span id="scene-activity">企鹅在擦信号灯</span></div>
+            <button class="hotspot recorder" data-action="harbor_sound" aria-label="听听港湾录音"><span class="hotspot-dot"></span><span class="hotspot-label">港湾录音</span></button>
+            <button class="hotspot shelf" data-action="project" aria-label="看看信号灯的进展"><span class="hotspot-dot"></span><span class="hotspot-label">信号灯</span></button>
+            <button class="hotspot plant" data-action="fish" aria-label="到码头钓一竿"><span class="hotspot-dot"></span><span class="hotspot-label">钓一竿</span></button>
+            <button class="room-pet" id="room-pet" data-action="knock" aria-label="轻轻叫一声企鹅"><img class="penguin-image" hidden alt="一只戴围巾的小企鹅"><span class="penguin-placeholder" aria-hidden="true">🐧</span></button>
+            <div class="new-leaf" id="new-leaf" hidden>信号灯有了新进展</div>
+            <div class="scene-bottom"><span>点击企鹅打招呼</span><button id="rain-toggle" aria-pressed="false"><span aria-hidden="true">♫</span> 听海</button></div>
+          </div>
+
+          <div class="life-strip">
+            <div class="life-icon" aria-hidden="true">⌁</div>
+            <div class="life-content"><span class="section-label">最近在认真做的事</span><h2 id="project-title">在天黑前点亮信号灯</h2><p id="project-detail">给夜里进港的小船指路。</p><div class="progress-track" role="progressbar" aria-label="信号灯修复进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress"><span></span></div></div>
+            <button class="text-button advance-button" id="advance">过一会儿 <span aria-hidden="true">↗</span><small>快进 3 分钟</small></button>
+          </div>
+
+          <div class="recent-section"><div class="section-heading"><h2>码头手记</h2><span id="catch-total">渔获 · 0</span></div><div id="recent-life" class="recent-life"><p>企鹅捡回了被风吹灭的信号灯。</p></div></div>
+        </div>
+
+        <aside class="conversation" aria-label="与企鹅聊天">
+          <div class="profile"><div class="avatar"><img class="penguin-image" hidden alt=""><span class="penguin-placeholder" aria-hidden="true">🐧</span></div><div><h2>企鹅 <span class="live-dot"></span></h2><p id="profile-status">正在做自己的事</p></div><button id="voice-toggle" class="voice-button" aria-pressed="false" title="开启企鹅的声音" aria-label="开启企鹅的声音">♫</button></div>
+          <div class="voice-settings">
+            <label for="voice-select">音色</label>
+            <div class="voice-controls"><select id="voice-select"></select><button id="voice-preview" type="button">试听</button></div>
+            <p>语音需联网，留言正文保存在本机。</p>
+          </div>
+          <div class="dialog-area" aria-live="polite"><p class="dialog-topic" id="dialog-topic">见面</p><p class="dialog-text" id="dialog-text">欸，你来啦。要陪我在天黑前把信号灯点起来吗？</p><div id="choices" class="choices"></div></div>
+          <div class="conversation-actions"><button data-action="project"><span aria-hidden="true">⌑</span> 在忙什么呀？<span aria-hidden="true">↗</span></button><button data-action="harbor_sound"><span aria-hidden="true">♧</span> 听一段海浪<span aria-hidden="true">↗</span></button><button data-action="recall"><span aria-hidden="true">▤</span> 还记得上次吗？<span aria-hidden="true">↗</span></button></div>
+          <form id="chat-form"><label for="chat-input">留一句话给企鹅</label><div class="input-wrap"><textarea id="chat-input" rows="2" maxlength="600" placeholder="今天发生了一件小事……"></textarea><button type="submit" id="chat-send" aria-label="把这句话告诉企鹅">↗</button></div><span class="saved-note" id="saved-note">留言保存在这台电脑。</span></form>
+          <div class="rain-player" id="rain-player" hidden><div class="section-heading"><span>企鹅的港湾录音</span><button id="rain-stop" aria-label="停止海浪声">×</button></div><div class="rain-presets"><button data-rain="leaves" class="selected">退潮</button><button data-rain="window">码头</button><button data-rain="roof">风崖</button></div><label class="volume-label">音量<input type="range" id="rain-volume" min="0" max="35" value="12" aria-label="海浪音量"></label></div>
+        </aside>
+      </section>
+
+      <section id="memories-view" class="memories-layout" hidden aria-label="会话记录">
+        <div class="memory-intro"><span class="eyebrow">HARBOR LOG</span><h2>我们的<br>会话记录</h2><p>钓到的鱼、一起点的灯，<br>还有你留下的那句话。</p><img class="penguin-image" hidden alt="企鹅"></div>
+        <div class="memory-book"><div id="journal-list"></div></div>
+      </section>
+
+      <footer class="footer"><button id="earbud-toggle" aria-expanded="false"><span class="device-dot" id="device-dot"></span><span id="device-label">耳机连接中</span><span aria-hidden="true">⌃</span></button><span class="demo-note">Yonhee Chan 企鹅同人素材 · 仅供个人非商业使用</span><button id="quit">结束陪伴</button></footer>
+      <section class="earbud-panel" id="earbud-panel" hidden aria-label="耳机互动设置"><div><h2>把企鹅带到耳边</h2><p id="device-detail">正在连接已配对的 OPPO Enco Air5 Pro。</p><div id="device-battery" class="battery-line"></div><p class="earbud-help">左耳单击摸摸头，右耳单击翻收藏。左耳双击叫企鹅，右耳双击听进展。触摸也可能触发耳机原生媒体操作。</p><button id="reconnect" class="outline-button">重新连接耳机</button></div><div><p id="last-touch">等待第一次触摸</p><p id="unclassified-touch" hidden></p><p class="earbud-help">空盒开合的状态可能未知。断线后显示等待连接，下一次有效回包会继续更新。</p></div></section>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status" hidden></div>
+</body>
+</html>

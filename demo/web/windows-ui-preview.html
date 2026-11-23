@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>企鹅港湾 · Windows 面板预览</title>
+<style>
+*{box-sizing:border-box} body{margin:0;color:#f4fbff;font:14px "Microsoft YaHei UI","Segoe UI",sans-serif;background:#101b23}
+button,input{font:inherit;color:inherit}button{cursor:pointer;background:none;border:0}button:focus-visible,input:focus-visible{outline:2px solid #a1eee1;outline-offset:3px} button:disabled{opacity:.45}
+.shell{max-width:1180px;margin:auto;padding:30px 24px}.bar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:18px}.bar h1{font-size:17px;font-weight:600;margin:0}.themes{display:flex;gap:6px}.themes button{padding:6px 12px;border:1px solid #657985;border-radius:8px}.themes [aria-pressed=true]{background:#34545d;color:#a8f5e7}
+.stage{min-height:480px;display:grid;grid-template-columns:195px minmax(250px,1fr) 350px;place-items:center;gap:24px;padding:32px 22px;border-radius:20px;overflow:hidden;background:radial-gradient(ellipse at 69% 17%,#69838a75,transparent 52%),linear-gradient(145deg,#172933,#233c49 58%,#131d26);position:relative}.stage[data-tone=light]{background:radial-gradient(at 20% 24%,#e8ede5,transparent 60%),linear-gradient(135deg,#c9d8da,#e7e8e3 64%,#a7bfc3)} .stage[data-tone=lines]{background:repeating-linear-gradient(124deg,#556d75 0 36px,#789096 36px 38px,#415760 38px 82px)}
+.glass{background:linear-gradient(145deg,#5b7582a8,#283d4bc9);backdrop-filter:blur(16px) saturate(125%);border:1px solid #b8dce34f;box-shadow:inset 0 1px #fff2,0 9px 25px #08151f38;border-radius:15px}
+.ico{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round;flex:none}.menu{width:100%;padding:9px;display:grid;gap:3px}.menu button{padding:10px;display:flex;align-items:center;gap:10px;text-align:left;border-radius:8px}.menu button:first-child,.menu button:hover,.dock button:hover,.player button:hover{background:#83c9d02a}.menu button:first-child .ico,.accent,.active{color:#a1eee1}.menu button span{flex:1}
+.chat{width:100%;display:grid;justify-items:center;align-content:center;gap:9px}.caption{margin:0;min-height:50px;display:grid;place-items:center;text-align:center;font-size:20px;line-height:1.4;max-width:28ch;text-shadow:0 1px 4px #14262e,0 0 15px #182b36b3;overflow-wrap:anywhere}.pet{width:146px;height:146px;object-fit:contain}.dock{display:flex;align-items:center;width:min(100%,325px);height:40px;padding:0 6px 0 13px;gap:2px;border-radius:14px}.dock input{min-width:0;flex:1;background:none;border:0;outline:none}.dock input::placeholder{color:#e4eef3}.dock button,.player button{display:grid;place-items:center;border-radius:8px;min-height:31px;min-width:31px}.dock button[title] .ico{width:17px;height:17px}.tools{position:absolute;padding:8px;display:grid;gap:4px;margin-top:6px;right:0;z-index:2}.tools button{text-align:left;padding:7px 10px}.tools[hidden]{display:none}.compose{position:relative;width:min(100%,325px)}
+.player{width:100%;padding:15px}.heading,.track,.transport,.tabs{display:flex;align-items:center}.heading{gap:8px;justify-content:space-between}.heading span{display:flex;gap:8px;align-items:center}.track{margin-top:16px;gap:12px}.cover{width:61px;height:61px;border-radius:9px;object-fit:cover}.song{flex:1;min-width:0}.song input{width:100%;accent-color:#a1eee1;height:11px}.time{display:flex;justify-content:space-between;font-size:11px;color:#dae7ed}.transport{justify-content:center;gap:18px;margin:13px 0}.player .round{width:40px;height:40px;border:1px solid #a1eee1;border-radius:50%}.tabs{border-top:1px solid #bad2dd36;justify-content:space-between}.tabs button{padding:8px;border-bottom:2px solid transparent;border-radius:0}.tabs .active{border-color:#a1eee1}.content{min-height:64px;padding-top:8px;color:#e6f0f5}.content p{margin:7px 0}.search{display:flex;gap:5px}.search input{width:100%;background:#172a365e;border:1px solid #a5c9d65e;border-radius:6px;padding:5px}.search button{padding:4px 8px}.queue{display:flex;align-items:center;justify-content:space-between}.player[hidden],.dock[hidden]{display:none}
+@media(max-width:910px){.stage{grid-template-columns:185px 1fr}.player{grid-column:1/-1;max-width:380px}}@media(max-width:540px){.shell{padding:16px 10px}.stage{grid-template-columns:1fr;padding:20px 12px}.menu{max-width:215px}.bar{flex-wrap:wrap}}
+</style>
+<main class="shell">
+<header class="bar"><h1>企鹅港湾 · Windows 面板预览</h1><div class="themes" aria-label="测试背景"><button aria-pressed="true" data-tone="dark">深色桌面</button><button aria-pressed="false" data-tone="light">浅色桌面</button><button aria-pressed="false" data-tone="lines">纹理桌面</button></div></header>
+<div class="stage" data-tone="dark">
+<nav class="menu glass" aria-label="企鹅菜单"></nav>
+<section class="chat" aria-label="聊天浮层">
+<p class="caption" aria-live="polite">今天想聊什么？</p>
+<img class="pet" data-src="/assets/penguin.png" alt="现有桌面企鹅">
+<div class="compose"><form class="dock glass"><input aria-label="聊天消息" placeholder="和企鹅说点什么…" maxlength="600"><button class="accent" title="发送" data-icon="send"></button><button type="button" id="more" aria-expanded="false" title="更多" data-icon="more"></button></form>
+<div class="tools glass" hidden><button data-action="voice">语音聊天</button><button data-action="music">播放队列</button><button data-action="close">收起输入条</button></div></div>
+</section>
+<section class="player glass" aria-label="歌曲面板">
+<header class="heading"><span><i data-icon="music"></i>音乐</span><button title="关闭音乐面板" data-icon="close" data-action="hideMusic"></button></header>
+<div class="track"><img class="cover" src="assets/harbor.webp" alt=""><div class="song"><span id="song">我记得 · 赵雷</span><input aria-label="播放进度" id="seek" type="range" min="0" max="328" value="86"><div class="time"><span id="elapsed">01:26</span><span>05:28</span></div></div></div>
+<div class="transport"><button title="上一首" data-icon="prev" data-action="prev"></button><button class="round accent" title="暂停" id="pause" data-icon="pause" data-action="pause"></button><button title="下一首" data-icon="next" data-action="next"></button></div>
+<div class="tabs" aria-label="音乐内容"><button class="active" data-tab="lyrics">歌词</button><button data-tab="search">搜索结果</button><button data-tab="queue">播放队列</button></div>
+<div class="content" aria-live="polite"></div>
+</section>
+</div>
+</main>
+<script>
+const paths = {
+chat:'<path d="M20 11a8 8 0 0 1-8 8H5l1.4-3A8 8 0 1 1 20 11Z"/><path d="M9 11h.1m3 0h.1m3 0h.1"/>',
+mic:'<rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0m-7 7v3m-3 0h6"/>',
+tune:'<path d="M5 4v16m7-16v16m7-16v16"/><circle cx="5" cy="8" r="2"/><circle cx="12" cy="15" r="2"/><circle cx="19" cy="9" r="2"/>',
+music:'<path d="M9 18V5l11-2v13M9 9l11-2"/><ellipse cx="6" cy="18" rx="3" ry="2"/><ellipse cx="17" cy="16" rx="3" ry="2"/>',
+quote:'<path d="M9 6c-3 2-4 5-4 9h5v-5H7m11-4c-3 2-4 5-4 9h5v-5h-3"/>',
+send:'<path d="m3 11 18-8-7 18-3-8-8-2Zm8 2L21 3"/>',more:'<path d="M5 12h.1m7 0h.1m7 0h.1" stroke-width="3"/>',
+close:'<path d="m6 6 12 12M18 6 6 18"/>',prev:'<path d="M6 5v14m12-14L8 12l10 7Z"/>',next:'<path d="M18 5v14M6 5l10 7-10 7Z"/>',
+pause:'<path d="M9 6v12m6-12v12" stroke-width="2.7"/>',play:'<path d="m9 5 10 7-10 7Z"/>'
+};
+const icon=name=>`<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">${paths[name]}</svg>`;
+const $=s=>document.querySelector(s);
+const menu=[['chat','和企鹅说话','chat'],['mic','语音聊天','voice'],['tune','说话音色','voiceTone'],['music','播放队列','music'],['quote','桌面歌词','lyrics']];
+$('.menu').innerHTML=menu.map(([id,label,action])=>`<button data-action="${action}">${icon(id)}<span>${label}</span>${action==='lyrics'?'<small id="lyricCheck">✓</small>':''}</button>`).join('');
+document.querySelectorAll('[data-icon]').forEach(el=>{el.innerHTML=icon(el.dataset.icon);if(el.title)el.setAttribute('aria-label',el.title)});
+const nativePanel = location.protocol === 'file:' && location.hash === '#desktop';
+if (!nativePanel) $('.pet').src = $('.pet').dataset.src;
+const implementation = document.createElement('script');
+implementation.src = nativePanel ? 'desktop-panel.js' : 'panel-preview.js';
+document.body.append(implementation);
+</script>
+</html>

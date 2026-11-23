@@ -1,0 +1,729 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>企鹅港湾 · 桌面演示</title>
+<style>
+:root {
+  --glass: rgba(18, 29, 38, 0.62);
+  --glass-strong: rgba(14, 24, 32, 0.82);
+  --line: rgba(184, 220, 227, 0.16);
+  --ink: #eef6fa;
+  --ink-dim: #a8bfca;
+  --accent: #a1eee1;
+  --accent-soft: rgba(161, 238, 225, 0.16);
+  --bar-h: 48px;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; overflow: hidden; }
+body {
+  font: 14px/1.5 "Microsoft YaHei UI", "Segoe UI", "PingFang SC", sans-serif;
+  color: var(--ink);
+  background: #0a1116;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* ── 港湾壁纸 ───────────────────────────── */
+.wallpaper {
+  position: fixed;
+  inset: 0;
+  background: url(assets/harbor.webp) center / cover no-repeat;
+  filter: saturate(1.04) brightness(0.9);
+  transform: scale(1.02);
+}
+.wallpaper::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 22% 18%, rgba(120, 168, 186, 0.16), transparent 55%),
+    linear-gradient(180deg, rgba(6, 13, 18, 0.42) 0%, rgba(6, 13, 18, 0.1) 38%, rgba(4, 10, 15, 0.55) 100%);
+}
+
+/* ── 桌面图标 ───────────────────────────── */
+.desktop-icons {
+  position: fixed;
+  top: 18px;
+  left: 18px;
+  display: grid;
+  gap: 4px;
+  z-index: 10;
+}
+.desk-icon {
+  width: 84px;
+  padding: 8px 4px 6px;
+  border-radius: 6px;
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  cursor: default;
+  border: 1px solid transparent;
+}
+.desk-icon:hover { background: rgba(200, 226, 235, 0.13); border-color: rgba(200, 226, 235, 0.22); }
+.desk-icon svg { width: 34px; height: 34px; filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.45)); }
+.desk-icon span {
+  font-size: 11px;
+  text-align: center;
+  line-height: 1.3;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
+  color: #f2f8fb;
+}
+.desk-icon.is-app svg { filter: drop-shadow(0 0 7px rgba(161, 238, 225, 0.45)) drop-shadow(0 2px 3px rgba(0, 0, 0, 0.4)); }
+
+/* ── 企鹅的小屋窗口 ─────────────────────── */
+.window {
+  position: fixed;
+  left: 14%;
+  top: 13%;
+  width: min(430px, 42vw);
+  border-radius: 12px;
+  background: var(--glass);
+  border: 1px solid var(--line);
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.48), inset 0 1px rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(22px) saturate(150%);
+  -webkit-backdrop-filter: blur(22px) saturate(150%);
+  z-index: 20;
+  overflow: hidden;
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+.window[hidden] { display: block; opacity: 0; transform: translateY(10px) scale(0.98); pointer-events: none; }
+.win-bar {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  height: 38px;
+  padding: 0 12px;
+  border-bottom: 1px solid rgba(184, 220, 227, 0.1);
+}
+.win-bar .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px rgba(161, 238, 225, 0.7); flex: none; }
+.win-bar strong { font-size: 12.5px; font-weight: 600; letter-spacing: 0.02em; }
+.win-bar .where { font-size: 11px; color: var(--ink-dim); margin-left: auto; margin-right: 10px; }
+.win-btns { display: flex; gap: 4px; margin-left: auto; }
+.win-btns button {
+  width: 26px; height: 22px;
+  display: grid; place-items: center;
+  border: 0; border-radius: 4px;
+  background: transparent; color: var(--ink-dim);
+  cursor: pointer;
+}
+.win-btns button:hover { background: rgba(200, 226, 235, 0.14); color: var(--ink); }
+.win-btns button.close:hover { background: #c4444a; color: #fff; }
+.win-body { padding: 16px 16px 18px; }
+
+.lamp-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.lamp-head h2 { margin: 0; font-size: 15px; font-weight: 600; }
+.lamp-head .pct { font-size: 22px; font-weight: 600; color: var(--accent); font-variant-numeric: tabular-nums; }
+.track { height: 7px; border-radius: 6px; background: rgba(190, 208, 211, 0.2); margin: 11px 0 8px; overflow: hidden; }
+.track i { display: block; height: 100%; width: 40%; border-radius: 6px; background: linear-gradient(90deg, #5fbfae, #a1eee1); box-shadow: 0 0 12px rgba(161, 238, 225, 0.5); }
+.meta { font-size: 11.5px; color: var(--ink-dim); }
+
+.today { margin-top: 16px; padding-top: 14px; border-top: 1px solid rgba(184, 220, 227, 0.1); }
+.today h3, .shelf h3 {
+  margin: 0 0 8px; font-size: 10.5px; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-dim);
+}
+.today ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.today li { font-size: 12.5px; display: flex; gap: 8px; align-items: baseline; }
+.today li::before { content: ""; width: 4px; height: 4px; border-radius: 50%; background: var(--accent); flex: none; transform: translateY(-3px); }
+
+.shelf { margin-top: 16px; }
+.shelf-row { display: flex; gap: 8px; }
+.card {
+  flex: 1;
+  aspect-ratio: 4 / 3;
+  border-radius: 7px;
+  border: 1px solid rgba(184, 220, 227, 0.18);
+  background: url(assets/harbor.webp) center / cover;
+  position: relative;
+  overflow: hidden;
+  filter: brightness(0.92);
+}
+.card:nth-child(2) { background-position: 30% 60%; filter: brightness(0.82) hue-rotate(-8deg); }
+.card:nth-child(3) { background-position: 78% 40%; filter: brightness(0.78) hue-rotate(6deg); }
+.card span {
+  position: absolute; inset: auto 0 0;
+  padding: 3px 5px;
+  font-size: 9.5px; color: #eaf4f8;
+  background: linear-gradient(transparent, rgba(5, 12, 17, 0.82));
+}
+
+/* ── 企鹅所在图层 ───────────────────────── */
+.pet-layer {
+  position: fixed;
+  left: 58%;
+  bottom: calc(var(--bar-h) + 26px);
+  z-index: 30;
+  display: grid;
+  justify-items: center;
+  animation: pet-enter 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes pet-enter {
+  from { opacity: 0; transform: translateY(26px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.pet-stage { position: relative; display: grid; justify-items: center; }
+
+/* 状态药丸 */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 12px 5px 10px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  letter-spacing: 0.02em;
+  color: #e8f4f7;
+  background: rgba(16, 28, 36, 0.78);
+  border: 1px solid rgba(184, 220, 227, 0.2);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.34);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  white-space: nowrap;
+}
+.pill i {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px rgba(161, 238, 225, 0.9);
+  animation: pulse 2.4s ease-in-out infinite;
+}
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+/* 说话气泡 */
+.bubble {
+  position: absolute;
+  left: calc(100% + 16px);
+  top: 42px;
+  width: max-content;
+  max-width: 230px;
+  padding: 10px 13px;
+  border-radius: 12px;
+  border-bottom-left-radius: 4px;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: #eaf5f8;
+  background: rgba(16, 28, 36, 0.8);
+  border: 1px solid rgba(184, 220, 227, 0.18);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.36);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  pointer-events: none;
+}
+.bubble.show { opacity: 1; transform: translateX(0); }
+
+/* 企鹅本体：雪碧图逐帧 */
+.penguin {
+  width: 104px;
+  height: 113px;
+  margin-top: 10px;
+  background-image: url(assets/penguin-sheet.webp);
+  background-repeat: no-repeat;
+  background-size: 832px 563px; /* 8 列 × 5 行，显示尺寸的 8 倍 */
+  filter: drop-shadow(0 10px 16px rgba(0, 0, 0, 0.5));
+  cursor: grab;
+  touch-action: none;
+}
+.penguin:active { cursor: grabbing; }
+.penguin[data-anim="idle"] { animation: anim-idle 1s steps(6) infinite; }
+.penguin[data-anim="wave"] { animation: anim-wave 0.42s steps(4) 3; }
+.penguin[data-anim="jump"] { animation: anim-jump 0.44s steps(5) 2; }
+@keyframes anim-idle { from { background-position: 0 0; } to { background-position: -624px 0; } }
+@keyframes anim-wave { from { background-position: 0 -338px; } to { background-position: -416px -338px; } }
+@keyframes anim-jump { from { background-position: 0 -451px; } to { background-position: -520px -451px; } }
+
+/* 地面阴影 */
+.pet-shadow {
+  width: 76px; height: 13px;
+  margin-top: -8px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.5), transparent 72%);
+  filter: blur(1px);
+}
+
+/* ── 右键菜单 ───────────────────────────── */
+.menu {
+  position: fixed;
+  z-index: 60;
+  min-width: 172px;
+  padding: 5px;
+  border-radius: 9px;
+  background: var(--glass-strong);
+  border: 1px solid rgba(184, 220, 227, 0.2);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+}
+.menu[hidden] { display: none; }
+.menu button {
+  display: flex; align-items: center; gap: 9px;
+  width: 100%; padding: 7px 10px;
+  border: 0; border-radius: 6px;
+  background: transparent; color: var(--ink);
+  font: inherit; font-size: 12.5px;
+  text-align: left; cursor: pointer;
+}
+.menu button:hover { background: var(--accent-soft); color: #d9fff8; }
+.menu hr { margin: 4px 6px; border: 0; border-top: 1px solid rgba(184, 220, 227, 0.12); }
+.menu .hint { padding: 5px 10px 3px; font-size: 10px; color: var(--ink-dim); letter-spacing: 0.08em; }
+
+/* ── 任务栏 ─────────────────────────────── */
+.taskbar {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  height: var(--bar-h);
+  z-index: 40;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 0 14px;
+  background: rgba(12, 21, 28, 0.78);
+  border-top: 1px solid rgba(184, 220, 227, 0.12);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+}
+.tb-center { display: flex; align-items: center; gap: 4px; }
+.tb-btn {
+  width: 40px; height: 38px;
+  display: grid; place-items: center;
+  border: 0; border-radius: 7px;
+  background: transparent; color: #dcebf1;
+  cursor: pointer;
+  position: relative;
+}
+.tb-btn:hover { background: rgba(200, 226, 235, 0.14); }
+.tb-btn svg { width: 21px; height: 21px; }
+.tb-btn.running::after {
+  content: ""; position: absolute; bottom: 3px;
+  width: 14px; height: 3px; border-radius: 2px;
+  background: var(--accent); opacity: 0.85;
+}
+.tb-btn.active { background: rgba(161, 238, 225, 0.15); }
+.tb-btn.active::after { width: 20px; opacity: 1; }
+.tb-right { justify-self: end; text-align: right; font-size: 11px; line-height: 1.35; color: #e6f1f5; padding-right: 3px; }
+.tb-left { display: flex; align-items: center; gap: 8px; font-size: 11px; color: #b9ccd4; }
+.tb-left .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 9px rgba(161, 238, 225, 0.8); }
+
+@media (max-width: 820px) {
+  .window { left: 5%; top: 9%; width: min(360px, 74vw); }
+  .pet-layer { left: auto; right: 8%; bottom: calc(var(--bar-h) + 18px); }
+  .penguin { width: 86px; height: 94px; background-size: 688px 466px; }
+  @keyframes anim-idle { from { background-position: 0 0; } to { background-position: -516px 0; } }
+  @keyframes anim-wave { from { background-position: 0 -280px; } to { background-position: -344px -280px; } }
+  @keyframes anim-jump { from { background-position: 0 -373px; } to { background-position: -430px -373px; } }
+  .bubble { left: auto; right: calc(100% + 14px); border-bottom-left-radius: 12px; border-bottom-right-radius: 4px; max-width: 180px; }
+  .desk-icon { width: 72px; }
+}
+@media (max-width: 560px) {
+  .bubble { display: none; }
+  .window { left: 4%; width: 88vw; }
+}
+.win-body {max-height:calc(80dvh - var(--bar-h)); overflow:auto; scrollbar-width:thin}
+.window[hidden] {display:none}
+.journal {margin-top:16px; border-top:1px solid var(--line)}
+.journal h3 {font-size:15px; margin:14px 0 8px}
+.journal small, .journal time {font-size:11px;color:var(--ink-dim)}
+#history {height:clamp(86px,17vh,160px);overflow:auto;scrollbar-width:thin}
+#history p {font-size:13px;line-height:1.55;margin:8px 0;overflow-wrap:anywhere}
+#history time {display:block;font-variant-numeric:tabular-nums}
+#compose,.player {display:flex;align-items:center;gap:6px;margin-top:10px}
+#compose input,.journal button,.journal select {font:inherit;color:inherit;border:1px solid var(--line);border-radius:8px;background:rgba(16,32,39,.63);padding:6px 9px}
+#compose input {min-width:0;flex:1}
+.journal button,.journal select {cursor:pointer;font-size:12px}
+.journal button:hover {background:var(--accent-soft)}
+.player {border-top:1px solid var(--line);padding-top:10px;flex-wrap:wrap}
+.player select {flex:1; min-width:95px}
+#lyric {position:absolute;bottom:calc(100% + 8px);width:max-content;max-width:min(220px,85vw);padding:5px 10px;border-radius:12px;background:rgba(12,26,33,.75);font-size:12px;text-align:center}
+.shelf summary {cursor:pointer;font-size:12px;color:var(--ink-dim);margin-bottom:6px}
+@media(max-width:560px){.window{top:2%;width:92vw}.win-body{max-height:calc(100dvh - 228px)}}
+</style>
+</head>
+<body>
+<div class="wallpaper"></div>
+
+<!-- 桌面图标 -->
+<nav class="desktop-icons" aria-label="桌面图标">
+  <div class="desk-icon">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#dfeaf0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="4" width="19" height="12.5" rx="1.6"/><path d="M8.5 20.5h7M12 16.5v4"/></svg>
+    <span>此电脑</span>
+  </div>
+  <div class="desk-icon">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#dfeaf0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 6.5h14l-1.2 12.2a1.6 1.6 0 0 1-1.6 1.4H7.8a1.6 1.6 0 0 1-1.6-1.4Z"/><path d="M9 6.5V5a3 3 0 0 1 6 0v1.5M9.5 10.5v6M14.5 10.5v6"/></svg>
+    <span>回收站</span>
+  </div>
+  <div class="desk-icon is-app" data-open-window>
+    <svg viewBox="0 0 24 24" fill="none" stroke="#a1eee1" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="15.5" rx="6.2" ry="5.2"/><path d="M12 10.3c-2.6 0-4.4 1.1-4.9 2.3M12 10.3c2.6 0 4.4 1.1 4.9 2.3M9.8 15.4h.02M14.2 15.4h.02M12 16.6l1-1.1h-2Z"/></svg>
+    <span>企鹅港湾</span>
+  </div>
+</nav>
+
+<!-- 企鹅的小屋 -->
+<section class="window" id="harbor-window" aria-label="企鹅的小屋">
+  <header class="win-bar">
+    <span class="dot" aria-hidden="true"></span>
+    <strong>企鹅的小屋</strong>
+    <span class="where">雪港 · 夜</span>
+    <div class="win-btns">
+      <button type="button" title="最小化" aria-label="最小化" data-win="min">
+        <svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 5h6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+      </button>
+      <button type="button" title="最大化" aria-label="最大化" data-win="max">
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><rect x="2.2" y="2.2" width="5.6" height="5.6" stroke="currentColor" stroke-width="1.2" rx="1"/></svg>
+      </button>
+      <button type="button" class="close" title="关闭" aria-label="关闭" data-win="close">
+        <svg width="10" height="10" viewBox="0 0 10 10"><path d="M2.5 2.5l5 5M7.5 2.5l-5 5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </header>
+  <div class="win-body">
+    <div class="lamp-head">
+      <h2>信号灯</h2>
+      <span class="pct">40%</span>
+    </div>
+    <div class="track" role="img" aria-label="信号灯进度 40%"><i></i></div>
+    <p class="meta">守灯第 3 天 · 码头方向 · 今夜有雪</p>
+
+    <section class="journal" aria-label="和企鹅的会话">
+      <h3>和企鹅聊聊</h3>
+      <div id="history" role="log" aria-label="聊天和企鹅动态"></div>
+      <form id="compose"><input id="message" aria-label="给企鹅发消息" placeholder="试试「放一首雪港来信」" maxlength="500" required><button>发送</button></form>
+      <div class="player"><select id="queue" aria-label="播放队列"></select><button id="toggle">播放</button><button id="skip">下一首</button><button id="captions" aria-pressed="true">歌词</button></div>
+      <small>网页试玩 · 预设对话与原创旋律试听</small>
+    </section>
+
+    <details class="shelf">
+      <summary>收藏架</summary>
+      <div class="shelf-row">
+        <div class="card"><span>蓝色贝壳</span></div>
+        <div class="card"><span>歪星星灯罩</span></div>
+        <div class="card"><span>潮汐明信片</span></div>
+      </div>
+    </details>
+  </div>
+</section>
+
+<!-- 企鹅 -->
+<div class="pet-layer" id="pet-layer">
+  <div class="pet-stage">
+    <span id="lyric" hidden></span>
+    <span class="pill"><i aria-hidden="true"></i>在擦信号灯</span>
+    <div class="bubble" id="bubble" role="status" aria-live="polite"></div>
+    <div class="penguin" id="penguin" data-anim="idle" role="img" aria-label="企鹅，可以点它、拖动它，或者右键打开菜单"></div>
+  </div>
+  <div class="pet-shadow" aria-hidden="true"></div>
+</div>
+
+<!-- 右键菜单 -->
+<div class="menu" id="menu" hidden>
+  <div class="hint">企鹅</div>
+  <button type="button" data-act="talk">和企鹅说话</button>
+  <button type="button" data-act="music">播放队列</button>
+  <button type="button" data-act="shelf">翻小收藏</button>
+  <button type="button" data-act="caption">隐藏歌词</button>
+  <hr>
+  <button type="button" data-act="sleep">回盒睡觉</button>
+</div>
+
+<!-- 任务栏 -->
+<footer class="taskbar">
+  <div class="tb-left"><span class="dot" aria-hidden="true"></span>耳机场景模拟</div>
+  <div class="tb-center">
+    <button class="tb-btn" type="button" title="开始" aria-label="开始">
+      <svg viewBox="0 0 24 24" fill="#dcebf1"><rect x="3" y="3" width="8" height="8" rx="1.4"/><rect x="13" y="3" width="8" height="8" rx="1.4"/><rect x="3" y="13" width="8" height="8" rx="1.4"/><rect x="13" y="13" width="8" height="8" rx="1.4"/></svg>
+    </button>
+    <button class="tb-btn" type="button" title="搜索" aria-label="搜索">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#dcebf1" stroke-width="1.7" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6"/><path d="m15.2 15.2 4.3 4.3"/></svg>
+    </button>
+    <button class="tb-btn running active" type="button" title="企鹅港湾" aria-label="企鹅港湾" data-open-window>
+      <svg viewBox="0 0 24 24" fill="none" stroke="#a1eee1" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="15.5" rx="6.2" ry="5.2"/><path d="M12 10.3c-2.6 0-4.4 1.1-4.9 2.3M12 10.3c2.6 0 4.4 1.1 4.9 2.3M9.8 15.4h.02M14.2 15.4h.02M12 16.6l1-1.1h-2Z"/></svg>
+    </button>
+    <button class="tb-btn" type="button" title="文件资源管理器" aria-label="文件资源管理器">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#dcebf1" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5a1.5 1.5 0 0 1 1.5-1.5h4l2 2.2h8A1.5 1.5 0 0 1 20 9.7v8.3a1.5 1.5 0 0 1-1.5 1.5h-14A1.5 1.5 0 0 1 3 18Z"/></svg>
+    </button>
+    <button class="tb-btn" type="button" title="设置" aria-label="设置">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#dcebf1" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2.8v2.4M12 18.8v2.4M4.5 12H2.1M21.9 12h-2.4M6.7 6.7 5 5M19 19l-1.7-1.7M6.7 17.3 5 19M19 5l-1.7 1.7"/></svg>
+    </button>
+  </div>
+  <div class="tb-right" id="clock">--:--</div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  const penguin = document.getElementById('penguin');
+  const layer = document.getElementById('pet-layer');
+  const bubble = document.getElementById('bubble');
+  const menu = document.getElementById('menu');
+  const win = document.getElementById('harbor-window');
+  const clock = document.getElementById('clock');
+
+  /* ── 时钟 ── */
+  const week = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+  function tick() {
+    const d = new Date();
+    const pad = n => String(n).padStart(2, '0');
+    clock.innerHTML = pad(d.getHours()) + ':' + pad(d.getMinutes()) +
+      '<br>' + (d.getMonth() + 1) + '月' + d.getDate() + '日 ' + week[d.getDay()];
+  }
+  tick();
+  setInterval(tick, 15000);
+
+  /* ── 企鹅动画 ── */
+  let animTimer = null;
+  function play(name, ms) {
+    clearTimeout(animTimer);
+    penguin.dataset.anim = 'idle';
+    void penguin.offsetWidth; /* 强制重排，让同名动画也能重播 */
+    penguin.dataset.anim = name;
+    animTimer = setTimeout(() => { penguin.dataset.anim = 'idle'; }, ms);
+  }
+
+  /* ── 台词 ── */
+  const lines = [
+    '你回来啦。灯我擦亮了一点。',
+    '今晚海上很安静，只来了一艘小船。',
+    '我钓到一条银鱼，太小了，又放回去了。',
+    '隔壁岛回了三下短哨，应该是听到我了。',
+    '围巾又湿了一截，不过灯罩干净多啦。'
+  ];
+  let bubbleTimer = null;
+  const byId = id => document.getElementById(id);
+  function record(who, text) {
+    const row = document.createElement('p');
+    const stamp = document.createElement('time');
+    const now = new Date();
+    stamp.dateTime = now.toISOString();
+    stamp.textContent = now.toLocaleTimeString('zh-CN', {hour:'2-digit', minute:'2-digit'}) + ' · ' + who;
+    row.append(stamp, document.createTextNode(text));
+    byId('history').append(row);
+    byId('history').scrollTop = byId('history').scrollHeight;
+  }
+  function say(text, who = '企鹅') {
+    record(who, text);
+    bubble.textContent = text;
+    bubble.classList.add('show');
+    clearTimeout(bubbleTimer);
+    bubbleTimer = setTimeout(() => bubble.classList.remove('show'), 6000);
+  }
+  const songs = [
+    {title:'雪港来信', notes:[60,64,67,72,71,67,64,62], words:['雪落在没寄出的信上','我把港口的灯留给你']},
+    {title:'三声短哨', notes:[67,67,72,69,65,69,67,60], words:['隔壁岛吹来三声短哨','我用灯光轻轻应答']},
+    {title:'蓝色贝壳', notes:[62,65,69,74,72,69,65,62], words:['把小小贝壳贴近耳旁','慢慢听见退潮的海浪']}
+  ];
+  const queue = byId('queue');
+  songs.forEach((song,i) => queue.add(new Option(song.title,i)));
+  const audio = new Audio();
+  const previews = new Map();
+  let loaded = -1, lyricsOn = true, playRequest = 0;
+  // Render each short instrumental once. Native media time also drives its captions.
+  async function preview(index) {
+    const rate = 22050, beat = 0.6;
+    const ctx = new OfflineAudioContext(1, Math.ceil(16 * beat * rate), rate);
+    for (let i = 0; i < 16; i++) {
+      const osc = ctx.createOscillator(), gain = ctx.createGain();
+      const note = songs[index].notes[i % 8] + (i >= 8 ? -5 : 0);
+      osc.frequency.value = 440 * 2 ** ((note - 69) / 12);
+      const t = i * beat;
+      gain.gain.setValueAtTime(0.001,t);
+      gain.gain.exponentialRampToValueAtTime(0.23,t+0.025);
+      gain.gain.exponentialRampToValueAtTime(0.001,t+beat-0.01);
+      osc.connect(gain).connect(ctx.destination); osc.start(t); osc.stop(t+beat);
+    }
+    const samples = (await ctx.startRendering()).getChannelData(0);
+    const bytes = new ArrayBuffer(44 + samples.length*2), view = new DataView(bytes);
+    function tag(at,s) { [...s].forEach((c,i)=>view.setUint8(at+i,c.charCodeAt(0))); }
+    tag(0,'RIFF'); view.setUint32(4,bytes.byteLength-8,true); tag(8,'WAVE'); tag(12,'fmt ');
+    view.setUint32(16,16,true); view.setUint16(20,1,true); view.setUint16(22,1,true);
+    view.setUint32(24,rate,true); view.setUint32(28,rate*2,true); view.setUint16(32,2,true);
+    view.setUint16(34,16,true); tag(36,'data'); view.setUint32(40,samples.length*2,true);
+    samples.forEach((v,i)=>view.setInt16(44+i*2,v*32767,true));
+    return URL.createObjectURL(new Blob([bytes],{type:'audio/wav'}));
+  }
+  function paintPlayer() {
+    byId('toggle').textContent = audio.paused ? '播放' : '暂停';
+    const lyric = byId('lyric');
+    lyric.hidden = !lyricsOn || loaded < 0 || audio.ended;
+    if (!lyric.hidden) lyric.textContent = songs[loaded].words[audio.currentTime >= 4.8 ? 1 : 0];
+  }
+  for (const name of ['timeupdate','play','pause','ended']) audio.addEventListener(name,paintPlayer);
+  async function startSong(index) {
+    const request = ++playRequest;
+    queue.selectedIndex = index;
+    try {
+      if (!previews.has(index)) previews.set(index,preview(index));
+      const url = await previews.get(index);
+      if (request !== playRequest) return;
+      if (loaded !== index) { audio.src = url; loaded = index; }
+      await audio.play();
+      if (request === playRequest) say('一起听《' + songs[index].title + '》。');
+    } catch {
+      if (request === playRequest) { previews.delete(index); say('这段试听没能播放，可以点播放再试一次。'); }
+    }
+  }
+  function pauseSong() { ++playRequest; audio.pause(); say('音乐暂停了。'); }
+  function nextSong() { startSong((queue.selectedIndex + 1) % songs.length); }
+  function toggleLyrics() {
+    lyricsOn = !lyricsOn;
+    byId('captions').setAttribute('aria-pressed', String(lyricsOn));
+    menu.querySelector('[data-act="caption"]').textContent = lyricsOn ? '隐藏歌词' : '显示歌词';
+    paintPlayer();
+  }
+  byId('captions').onclick = toggleLyrics;
+  byId('toggle').onclick = () => audio.paused ? startSong(queue.selectedIndex) : pauseSong();
+  byId('skip').onclick = nextSong;
+  queue.onchange = () => startSong(queue.selectedIndex);
+  function openChat() { showWindow(); byId('message').focus(); }
+  byId('compose').onsubmit = e => {
+    e.preventDefault();
+    const input = byId('message'), msg = input.value.trim();
+    if (!msg) return;
+    input.value = ''; record('你',msg);
+    const index = songs.findIndex(song => msg.includes(song.title));
+    if (/暂停|先别放|停一下/.test(msg)) pauseSong();
+    else if (/下一首|切歌|换一首/.test(msg)) nextSong();
+    else if (index >= 0) startSong(index);
+    else if (/^(放一首歌|放首歌|继续播放|播放|听歌|放点音乐)[吧呀啊！!。]?$/.test(msg)) startSong(queue.selectedIndex);
+    else if (/歌|音乐|播放|想听|放一首/.test(msg)) say('我的试玩歌单里有《雪港来信》《三声短哨》和《蓝色贝壳》。想听哪一首？');
+    else if (/你好|嗨|在吗/.test(msg)) say('在呀。刚擦完灯，要陪我听一首《雪港来信》吗？');
+    else if (/做什么|干嘛|忙什么|干什么/.test(msg)) say('我刚把灯罩擦干净，正在等隔壁岛的短哨。');
+    else say('我正在守灯。你可以问我在忙什么，或告诉我想听哪首小曲。');
+  };
+
+  /* ── 点击 / 双击 / 右键 / 拖动 ── */
+  let dragging = false;
+  let moved = false;
+  let startX = 0, startY = 0, originLeft = 0, originTop = 0;
+
+  penguin.addEventListener('pointerdown', (e) => {
+    if (e.button === 2) return;
+    const rect = layer.getBoundingClientRect();
+    originLeft = rect.left;
+    originTop = rect.top;
+    startX = e.clientX;
+    startY = e.clientY;
+    moved = false;
+    dragging = true;
+    penguin.setPointerCapture(e.pointerId);
+  });
+
+  penguin.addEventListener('pointermove', (e) => {
+    if (!dragging) return;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    if (!moved && Math.hypot(dx, dy) > 5) moved = true;
+    if (!moved) return;
+    layer.style.left = (originLeft + dx) + 'px';
+    layer.style.top = (originTop + dy) + 'px';
+    layer.style.bottom = 'auto';
+    layer.style.right = 'auto';
+  });
+
+  penguin.addEventListener('pointerup', (e) => {
+    if (!dragging) return;
+    dragging = false;
+    penguin.releasePointerCapture(e.pointerId);
+    if (moved) return; /* 拖动结束不当作点击 */
+    play('wave', 1300);
+    openChat();
+  });
+
+  penguin.addEventListener('dblclick', () => {
+    play('jump', 900);
+  });
+
+  penguin.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    openMenu(e.clientX, e.clientY);
+  });
+
+  /* ── 右键菜单 ── */
+  function openMenu(x, y) {
+    menu.hidden = false;
+    const rect = menu.getBoundingClientRect();
+    const left = Math.min(x, window.innerWidth - rect.width - 8);
+    const top = Math.min(y, window.innerHeight - rect.height - 8);
+    menu.style.left = left + 'px';
+    menu.style.top = top + 'px';
+  }
+  function closeMenu() { menu.hidden = true; }
+
+  menu.addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-act]');
+    if (!btn) return;
+    const act = btn.dataset.act;
+    closeMenu();
+    if (act === 'talk') {
+      play('wave', 1300);
+      openChat();
+    } else if (act === 'music') {
+      play('wave', 1300);
+      showWindow(); queue.focus();
+    } else if (act === 'shelf') {
+      showWindow(); document.querySelector('.shelf').open = true;
+      play('jump', 900);
+      say('给你看我的蓝色贝壳，壳上的纹路像小小的海浪。');
+    } else if (act === 'caption') {
+      toggleLyrics();
+    } else if (act === 'sleep') {
+      say('那我先回盒里躺一会儿。晚安，下次见。');
+      play('idle', 100);
+    }
+  });
+
+  document.addEventListener('pointerdown', (e) => {
+    if (!menu.hidden && !menu.contains(e.target)) closeMenu();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeMenu();
+  });
+
+  /* ── 窗口开关 ── */
+  function showWindow() {
+    win.hidden = false;
+    document.querySelectorAll('.tb-btn[data-open-window]').forEach(b => b.classList.add('active'));
+  }
+  function hideWindow() {
+    win.hidden = true;
+    document.querySelectorAll('.tb-btn[data-open-window]').forEach(b => {
+      b.classList.remove('active');
+      b.classList.add('running');
+    });
+  }
+  document.querySelectorAll('[data-open-window]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      if (el.classList.contains('desk-icon')) {
+        /* 桌面图标：双击打开更符合习惯，单击只提示 */
+        if (e.detail < 2) return;
+      }
+      win.hidden ? showWindow() : hideWindow();
+    });
+  });
+  win.querySelectorAll('[data-win]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const kind = btn.dataset.win;
+      if (kind === 'close' || kind === 'min') hideWindow();
+      else if (kind === 'max') {
+        win.style.left = '6%';
+        win.style.top = '7%';
+        win.style.width = 'min(560px, 46vw)';
+      }
+    });
+  });
+
+  /* 开场：过一会儿自己说一句 */
+  record('企鹅心声','把灯罩上的盐霜擦掉了一小块。');
+  say(lines[0]);
+  let thought = 1;
+  setInterval(() => {
+    if (document.hidden) return;
+    record('企鹅心声',lines[thought]);
+    thought = 1 + thought % (lines.length - 1);
+  }, 60000);
+})();
+</script>
+</body>
+</html>
